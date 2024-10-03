@@ -1,0 +1,243 @@
+<% layout("/layouts/boilerplate") %>
+<style>
+    .starability-slot{
+        display: flex;
+        margin-right: 2rem;
+    }
+
+    .listing-details{
+        display: flex;
+    }
+
+    .discription{
+        padding: 12px;
+        position: relative !important;
+        width: 60%;
+    }
+
+    .pricing{
+        position: relative !important;
+        width: 40%;
+    }
+
+     .pricing-box{
+        text-align: center;
+        width: 100%;
+        position: sticky;
+        top: 25%;
+        display: inline-block !important;
+     }
+
+     .card-body a {
+        background-color: #fe424d;
+     }
+     .card{
+        position: sticky !important;
+        background-color: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+
+     }
+
+     .card-pricing{
+        margin-top: 1.3rem;
+     }
+
+     .card-text{
+        padding-left: 1.3rem;
+        padding-right: 1.3rem;
+     }
+
+     .flex-icon{
+        display: flex;
+     }
+
+     .info-icon i {
+        font-size: 1.7rem;
+        opacity: 0.7;
+     }
+
+     .info-content{
+        margin-left: 2rem;
+     }
+
+     .book-btn{
+        margin-bottom: 1.5rem;
+        width: 80%;
+        height: 2rem;
+        background-color:#fe424d ;
+        color: white;
+        border-radius: 8px;
+        padding: 0 1.3rem 0 1.3rem;
+  }
+
+  .book-btn:hover{
+    border: 2px solid black;
+    color: #fe424d;
+  }
+
+</style>
+
+
+<div class="row mt-3">
+    <div class="col-8 offset-3">
+        <h3> <%= listing.title %> </h3>
+    </div>
+    <div class="card col-6 offset-3 show-card listing-card">
+        <img src="<%= listing.image.url %>" class="card-img-top show-img" alt="listing-image">
+        <div class="card-body">
+            <% if (listing.owner) { %>
+                <p class="card-text"> Owned By <i><%= listing.owner.username %></i></p>
+            <% } else { %>
+                <p class="card-text"> Owner information not available</p>
+            <% } %>
+        </div>
+        <div class="listing-details">
+
+            <div class="discription">
+                <p class="card-text"> <b><%= listing.location %> ,&nbsp; <%= listing.country %></b></p>
+                <hr>
+                <h3 class="about">About this place :</h3>
+                <p class="card-text"> <%= listing.description %></p>
+
+                <hr>
+
+                <div class="infi-icons">
+                    <div class="flex-icon">
+                        <div class="info-icon">
+                            <i class="fa-solid fa-bed"></i>
+                        </div>  
+                        <div class="info-content">
+                            <h6><b>Room in a villa</b></h5>
+                            <p>Your own room in a home, plus access to shared spaces.</p>
+                        </div>                     
+                    </div>
+                    <div class="flex-icon">
+                        <div class="info-icon">
+                            <i class="fa-solid fa-house-user"></i>
+                        </div>  
+                        <div class="info-content">
+                            <h6><b>Shared common spaces</b></h5>
+                            <p>You'll share parts of the home</p>
+                        </div>                     
+                    </div>
+                    <div class="flex-icon">
+                        <div class="info-icon">
+                            <i class="fa-solid fa-bath"></i>
+                        </div>  
+                        <div class="info-content">
+                            <h6><b>Private attached bathroom</b></h5>
+                            <p>This place has a bathroom that’s connected to your room.</p>
+                        </div>                     
+                    </div>
+                    <div class="flex-icon">
+                        <div class="info-icon">
+                            <i class="fa-solid fa-water-ladder"></i>
+                        </div>  
+                        <div class="info-content">
+                            <h6><b>Dive right in</b></h5>
+                            <p>This is one of the few places in the area with a pool.</p>
+                        </div>                     
+                    </div>
+                    <!-- <div>
+                        <h6>Shared common spaces</h5>
+                        <p>.</p>
+                    </div>
+                    <div>
+                        <h6></h5>
+                        <p></p>
+                    </div>
+                    <div>
+                        <h6></h5>
+                        <p></p>
+                    </div> -->
+                </div>
+            </div>
+
+
+            <div class="pricing">
+                <div class="card pricing-box">
+                    <div class="card-header">
+                        Pricing
+                      </div>
+                      <div class="card-body">
+                        <h5 class="card-pricing">&#8377; <%= listing.price.toLocaleString("en-IN") %></h5>
+                        <p class="card-text">Book now before 11 PM & Get 15% off</p>
+                        <a href="#" class="btn book-btn">Book</a>
+                      </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <br>
+    <% if(currUser && listing.owner && listing.owner._id.equals(currUser._id)){ %>
+        <div class="btns">
+            <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark col-1 offset-3 edit-btn mb-5">Edit</a>
+            <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE">
+                <button class="btn btn-dark offset-5 mb-5">Delete</button>
+            </form>
+        </div>
+    <% } %>
+    <div class="col-8 offset-3 mb-3" >
+      
+        <% if(currUser){ %>
+            <hr>
+            <h4>Leave a Review</h4>
+            <form action="/listings/<%= listing.id %>/reviews" method="POST" novalidate class="needs-validation">
+                <div class="mb-3 mt-3">
+                    <label for="rating" class="form-label">Rating</label>
+                <fieldset class="starability-slot">                 
+                    <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked aria-label="No rating." />
+                    <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+                    <label for="first-rate1" title="Terrible">1 star</label>
+                    <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+                    <label for="first-rate2" title="Not good">2 stars</label>
+                    <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+                    <label for="first-rate3" title="Average">3 stars</label>
+                    <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+                    <label for="first-rate4" title="Very good">4 stars</label>
+                    <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+                    <label for="first-rate5" title="Amazing">5 stars</label>
+                  </fieldset>
+                  </div>
+                <div class="mb-3 mt-3">
+                    <label for="comment" class="form label">Comment</label>
+                    <textarea name="review[comment]" id="comment" cols="30" rows="5" class="form-control" required></textarea>
+                    <div class="invalid-feedback">Please add some comments for review</div>
+                </div>
+                <button class="btn btn-outline-dark">
+                    Submit
+                </button>
+            </form>
+            
+        <% } %>
+   
+        <% if(listing.reviews.length>0) {%>
+            <hr>
+        <div class="row review-box">
+            <p><b> All Reviews</b></p>
+                <%for(review of listing.reviews) { %>
+                    <div class="card col-5 ms-3 mb-3">
+                        <div class="card-body">
+                            <% if (review.author) { %>
+                                <h5 class="card-title">@<%= review.author.username %></h5>
+                            <% } else { %>
+                                <h5 class="card-title">Anonymous</h5>
+                            <% } %>
+                            <p class="starability-result card-text" data-rating="<%= review.rating %>">
+                            </p>
+                            <p class="card-text"><%= review.comment %></p>    
+                            
+                            <form class="mb-3" method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
+                                <button class="btn btn-sm btn-dark">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+             
+            <% } %>
+        </div>
+      <% } %>
+    </div>
+
+</div>
